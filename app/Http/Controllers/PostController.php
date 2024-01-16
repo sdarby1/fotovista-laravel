@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Post; // Importieren Sie Ihr Post-Modell
-use Illuminate\Support\Facades\Auth; // Importieren Sie die Auth-Fassade
+use App\Models\Post; 
+use Illuminate\Support\Facades\Auth; 
+
 
 class PostController extends Controller
 {
     public function create(Request $request)
     {
-        // Validierung der Eingaben
         $validatedData = $request->validate([
             'title' => 'required|string',
             'description' => 'required|string',
@@ -21,20 +21,16 @@ class PostController extends Controller
             'tripod' => 'nullable|string',
         ]);
 
-        // Überprüfung, ob der Benutzer authentifiziert ist
         if (!Auth::check()) {
             return response()->json(['message' => 'Unauthorisiert'], 401);
         }
 
-        // Extrahieren des authentifizierten Benutzers
         $user = Auth::user();
 
         try {
-            // Bildverarbeitung
             $imageName = $request->file('image')->getClientOriginalName();
             $request->file('image')->move(public_path('images'), $imageName);
 
-            // Post erstellen
             $post = Post::create([
                 'title' => $validatedData['title'],
                 'description' => $validatedData['description'],
@@ -48,7 +44,6 @@ class PostController extends Controller
 
             return response()->json(['message' => 'Post erfolgreich erstellt', 'post' => $post], 201);
         } catch (\Exception $e) {
-            // Fehlerbehandlung
             return response()->json(['message' => 'Fehler beim Erstellen des Posts', 'error' => $e->getMessage()], 500);
         }
     }
@@ -64,4 +59,12 @@ class PostController extends Controller
         return response()->json(['post' => $post]);
 
     }
+
+    public function userPosts($userId)
+    {
+        $posts = Post::where('user_id', $userId)->get();
+
+        return response()->json(['posts' => $posts]);
+    }
+
 }
