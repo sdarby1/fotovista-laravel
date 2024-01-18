@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,10 +29,17 @@ Route::controller(PostController::class)->group(function () {
     Route::middleware('auth:sanctum')->post('/auth/create-post', 'create');
     Route::get('/posts/{id}', 'show');
     Route::get('/users/{userId}/posts', 'userPosts');
+    Route::get('/posts', 'allPosts');
 });
 
 Route::controller(UserController::class)->group(function () {
-    Route::post('/update-profile', 'updateProfile');
+    Route::middleware('auth:sanctum')->post('/update-profile', 'updateProfile');
+});
+
+Route::controller(CommentController::class)->group(function () {
+    Route::middleware('auth:sanctum')->post('/posts/{post}/comments', 'storeComment');
+    Route::middleware('auth:sanctum')->post('/comments/{comment}/replies', 'storeReply');
+    Route::get('/posts/{postId}/comments', 'getPostComments');
 });
 
 

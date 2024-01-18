@@ -42,12 +42,11 @@ class AuthController extends Controller
         }
 
         $request->session()->regenerate();
-        return response()->json(status: 201, data: Auth::user());
+        return response()->json(status: 201, data: Auth::user()->makeVisible(['profile_image']));
     }
 
     public function logout(Request $request)
     {
-        // Auth::logout();
         Auth::guard('web')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();

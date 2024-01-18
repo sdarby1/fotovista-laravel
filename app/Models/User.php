@@ -23,7 +23,7 @@ class User extends Authenticatable
         'username',
         'email',
         'password',
-        'profile_image_url'
+        'profile_image'
     ];
 
     /**
@@ -53,4 +53,15 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-}
+/**
+     * Define a one-to-one relationship with the user's profile image.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function profileImage(): HasOne
+    {
+        return $this->hasOne(ProfileImage::class);
+    }
+
+    // ...
+    }
