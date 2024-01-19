@@ -6,6 +6,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\SearchController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -42,7 +44,9 @@ Route::controller(CommentController::class)->group(function () {
     Route::get('/posts/{postId}/comments', 'getPostComments');
 });
 
-
+Route::controller(SearchController::class)->group(function () {
+    Route::middleware('auth:sanctum')->get('/search', 'search');
+});
 
 Route::middleware('auth:sanctum')->get('/auth/user', function (Request $request) {
     return $request->user();
