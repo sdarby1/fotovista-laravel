@@ -23,9 +23,6 @@ class AuthController extends Controller
             'password' => Hash::make($request->get('password')),
         ]);
 
-        // Auth::login($user);
-        // $request->session()->regenerate();
-
         return response()->json(status: 201);
     }
 
