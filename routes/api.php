@@ -27,16 +27,22 @@ Route::controller(AuthController::class)->group(function () {
     Route::middleware('auth:sanctum')->get('/auth/user', 'logout');
 });
 
+
 Route::controller(PostController::class)->group(function () {
     Route::middleware('auth:sanctum')->post('/auth/create-post', 'create');
     Route::get('/posts/{id}', 'show');
     Route::get('/users/{userId}/posts', 'userPosts');
     Route::get('/posts', 'allPosts');
+    Route::middleware('auth:sanctum')->put('/posts/{id}', 'update');
+    Route::middleware('auth:sanctum')->delete('/posts/{id}', 'deletePost');
 });
+
 
 Route::controller(UserController::class)->group(function () {
     Route::middleware('auth:sanctum')->post('/update-profile', 'updateProfile');
+    Route::middleware('auth:sanctum')->delete('/user/delete', 'deleteAccount');
 });
+
 
 Route::controller(CommentController::class)->group(function () {
     Route::middleware('auth:sanctum')->post('/posts/{post}/comments', 'storeComment');
@@ -44,9 +50,11 @@ Route::controller(CommentController::class)->group(function () {
     Route::get('/posts/{postId}/comments', 'getPostComments');
 });
 
+
 Route::controller(SearchController::class)->group(function () {
     Route::middleware('auth:sanctum')->get('/search', 'search');
 });
+
 
 Route::middleware('auth:sanctum')->get('/auth/user', function (Request $request) {
     return $request->user();

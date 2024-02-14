@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
+
+    // Account bearbeiten
+
     public function updateProfile(Request $request)
     {
         $user = Auth::user();
@@ -32,5 +35,29 @@ class UserController extends Controller
 
         return response()->json(['message' => 'Profil erfolgreich aktualisiert', 'user' => $user]);
     }
+
+
+
+    // Account löschen
+
+    public function deleteAccount(Request $request)
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['message' => 'Benutzer nicht gefunden'], 404);
+        }
+
+        try {
+            $user->delete();
+            return response()->json(['message' => '✅ Konto erfolgreich gelöscht']);
+        } 
+
+        catch (\Exception $e) {
+            return response()->json(['message' => 'Fehler beim Löschen des Kontos', 'error' => $e->getMessage()], 500);
+        }  
+    }
+
+
 }
 

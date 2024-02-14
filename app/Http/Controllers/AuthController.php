@@ -34,7 +34,7 @@ class AuthController extends Controller
         ]);
 
         if (!Auth::attempt($request->only('email', 'password'))) {
-            $error = ['errors' => [ 'root' => ['We were unable to authenticate you with those details.'] ] ];
+            $error = ['errors' => [ 'root' => ['❌ Ungültige Anmeldedaten'] ] ];
             return response()->json(status: 422, data: $error);
         }
 
