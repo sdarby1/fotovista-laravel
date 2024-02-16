@@ -35,6 +35,8 @@ Route::controller(PostController::class)->group(function () {
     Route::get('/posts', 'allPosts');
     Route::middleware('auth:sanctum')->put('/posts/{id}', 'update');
     Route::middleware('auth:sanctum')->delete('/posts/{id}', 'deletePost');
+    Route::middleware('check.role:admin')->delete('/admin/posts/{id}', 'deleteUserPost');
+
 });
 
 
@@ -42,6 +44,7 @@ Route::controller(UserController::class)->group(function () {
     Route::middleware('auth:sanctum')->post('/update-profile', 'updateProfile');
     Route::middleware('auth:sanctum')->delete('/user/delete', 'deleteAccount');
     Route::get('/user/{userId}', 'userProfile');
+    Route::middleware('check.role:admin')->delete('/admin/users/{id}', 'deleteUser');
 });
 
 
@@ -49,6 +52,7 @@ Route::controller(CommentController::class)->group(function () {
     Route::middleware('auth:sanctum')->post('/posts/{post}/comments', 'storeComment');
     Route::middleware('auth:sanctum')->post('/comments/{comment}/replies', 'storeReply');
     Route::get('/posts/{postId}/comments', 'getPostComments');
+    Route::middleware('check.role:admin')->delete('/admin/comment/{id}', 'deleteComment');
 });
 
 

@@ -162,5 +162,29 @@ class PostController extends Controller
     }
 
 
+
+
+    // Post löschen durch Admin
+
+    public function deleteUserPost($postId)
+    {
+        $post = Post::find($postId);
+
+        if (!$post) {
+            return response()->json(['message' => 'Post nicht gefunden'], 404);
+        }
+
+        if (Auth::user()->role !== 'admin') {
+            return response()->json(['message' => 'Nicht autorisiert'], 403);
+        }
+
+        try {
+            $post->delete();
+            return response()->json(['message' => 'Post erfolgreich gelöscht']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Fehler beim Löschen des Posts', 'error' => $e->getMessage()], 500);
+        }
+    }
+
 }
 

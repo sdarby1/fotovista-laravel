@@ -76,5 +76,35 @@ class UserController extends Controller
     }
 
 
-}
 
+
+    /**
+     * Löscht einen Benutzer anhand seiner ID.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function deleteUser($id)
+    {
+        // Stelle sicher, dass nur Admins diese Aktion durchführen können
+        $user = Auth::user();
+        if ($user->role !== 'admin') {
+            return response()->json(['message' => 'Unautorisiert'], 403);
+        }
+
+        $userToDelete = User::find($id);
+        if (!$userToDelete) {
+            return response()->json(['message' => 'Benutzer nicht gefunden'], 404);
+        }
+
+        try {
+            // Führe notwendige Schritte durch, bevor der Benutzer gelöscht wird
+            // z.B. Löschen von zugehörigen Daten wie Posts, Kommentaren etc.
+            $userToDelete->delete();
+            return response()->json(['message' => 'Benutzer erfolgreich gelöscht']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Fehler beim Löschen des Benutzers', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+}

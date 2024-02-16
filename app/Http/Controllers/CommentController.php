@@ -51,4 +51,25 @@ class CommentController extends Controller
         return response()->json(['comments' => $comments]);
     }
 
+    public function deleteComment($commentId)
+    {
+        $comment = Comment::find($commentId);
+
+        if (!$comment) {
+            return response()->json(['message' => 'Kommentar nicht gefunden'], 404);
+        }
+
+        // Überprüfe, ob der angemeldete User Admin ist
+        if (Auth::user()->role !== 'admin') {
+            return response()->json(['message' => 'Nicht autorisiert'], 403);
+        }
+
+        try {
+            $comment->delete();
+            return response()->json(['message' => 'Kommentar erfolgreich gelöscht']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Fehler beim Löschen des Kommentars', 'error' => $e->getMessage()], 500);
+        }
+    }
+
 }
