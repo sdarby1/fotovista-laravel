@@ -41,6 +41,7 @@ Route::controller(PostController::class)->group(function () {
 Route::controller(UserController::class)->group(function () {
     Route::middleware('auth:sanctum')->post('/update-profile', 'updateProfile');
     Route::middleware('auth:sanctum')->delete('/user/delete', 'deleteAccount');
+    Route::get('/user/{userId}', 'userProfile');
 });
 
 

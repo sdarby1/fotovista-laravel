@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Post; 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -56,6 +57,22 @@ class UserController extends Controller
         catch (\Exception $e) {
             return response()->json(['message' => 'Fehler beim Löschen des Kontos', 'error' => $e->getMessage()], 500);
         }  
+    }
+
+
+
+
+    // Profil abrufen
+
+    public function userProfile($userId)
+    {
+        $user = User::with(['posts'])->find($userId);
+
+        if (!$user) {
+            return response()->json(['message' => 'Benutzer nicht gefunden'], 404);
+        }
+
+        return response()->json($user);
     }
 
 

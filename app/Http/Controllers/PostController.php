@@ -106,7 +106,7 @@ class PostController extends Controller
 
 
 
-    // Posts eines Users anzeigen
+    // Posts des eingeloggten Users anzeigen
 
     public function userPosts($userId)
     {
