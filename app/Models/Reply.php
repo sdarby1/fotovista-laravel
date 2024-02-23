@@ -23,4 +23,9 @@ class Reply extends Model
     {
         return $this->belongsTo(Reply::class, 'parent_id');
     }
+
+    public function replies()
+    {
+        return $this->hasMany(Reply::class, 'parent_id');
+    }
 }

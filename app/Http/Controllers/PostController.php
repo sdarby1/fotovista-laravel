@@ -186,5 +186,96 @@ class PostController extends Controller
         }
     }
 
-}
 
+    public function sortPosts(Request $request)
+    {
+        $sortOrder = $request->query('order', 'newest');
+
+        switch ($sortOrder) {
+            case 'newest':
+                $posts = Post::withCount('likes')->orderBy('created_at', 'desc')->get();
+                break;
+            case 'oldest':
+                $posts = Post::withCount('likes')->orderBy('created_at', 'asc')->get();
+                break;
+            case 'most_liked':
+                $posts = Post::withCount('likes')->orderBy('likes_count', 'desc')->get();
+                break;
+            case 'least_liked':
+                $posts = Post::withCount('likes')->orderBy('likes_count', 'asc')->get();
+                break;
+            default:
+                $posts = Post::withCount('likes')->orderBy('created_at', 'desc')->get();
+                break;
+        }
+
+        return response()->json(['posts' => $posts]);
+    }
+
+
+
+
+
+
+    // Likes
+
+    // Like oder Unlike eines Posts
+    public function toggleLike($postId)
+    {
+        $user = Auth::user();
+        $post = Post::find($postId);
+    
+        if (!$post) {
+            return response()->json(['message' => 'Post nicht gefunden'], 404);
+        }
+    
+        $isLiked = $user->likes()->where('post_id', $postId)->exists();
+        if ($isLiked) {
+            // Like entfernen
+            $user->likes()->detach($postId);
+        } else {
+            // Like hinzufügen
+            $user->likes()->attach($postId);
+        }
+    
+        // Aktualisierten Like-Status und Anzahl der Likes zurückgeben
+        $updatedLikesCount = $post->likes()->count();
+        $updatedIsLiked = !$isLiked; // Umkehrung des vorherigen Status, da der Like-Status geändert wurde
+    
+        return response()->json([
+            'likesCount' => $updatedLikesCount,
+            'isLiked' => $updatedIsLiked,
+        ]);
+    }
+    
+
+
+
+
+    // Anzahl der Likes eines Posts anzeigen
+    // Anzahl der Likes eines Posts anzeigen und prüfen, ob der Benutzer den Post geliked hat
+    public function getLikes($postId)
+    {
+        $post = Post::find($postId);
+
+        if (!$post) {
+            return response()->json(['message' => 'Post nicht gefunden'], 404);
+        }
+
+        $likesCount = $post->likes()->count();
+        $isLiked = false; // Standardwert
+
+        // Überprüfen, ob der aktuell eingeloggte Benutzer diesen Post geliked hat
+        if(Auth::check()) {
+            $user = Auth::user();
+            $isLiked = $post->likes()->where('user_id', $user->id)->exists();
+        }
+
+        return response()->json([
+            'likesCount' => $likesCount,
+            'isLiked' => $isLiked // Gibt zurück, ob der Benutzer den Post geliked hat
+        ]);
+    }
+
+
+}

@@ -47,7 +47,7 @@ class CommentController extends Controller
 
     public function getPostComments($postId)
     {
-        $comments = Comment::with('user')->where('post_id', $postId)->get();
+        $comments = Comment::with(['user', 'replies.user'])->where('post_id', $postId)->get();
         return response()->json(['comments' => $comments]);
     }
 
@@ -69,6 +69,27 @@ class CommentController extends Controller
             return response()->json(['message' => 'Kommentar erfolgreich gelöscht']);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Fehler beim Löschen des Kommentars', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function deleteReply($replyId)
+    {
+        $reply = Reply::find($replyId);
+
+        if (!$reply) {
+            return response()->json(['message' => 'Antwort nicht gefunden'], 404);
+        }
+
+        // Überprüfe, ob der angemeldete User Admin ist
+        if (Auth::user()->role !== 'admin') {
+            return response()->json(['message' => 'Nicht autorisiert'], 403);
+        }
+
+        try {
+            $reply->delete();
+            return response()->json(['message' => 'Antwort erfolgreich gelöscht']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Fehler beim Löschen der Antwort', 'error' => $e->getMessage()], 500);
         }
     }
 

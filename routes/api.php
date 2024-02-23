@@ -36,7 +36,9 @@ Route::controller(PostController::class)->group(function () {
     Route::middleware('auth:sanctum')->put('/posts/{id}', 'update');
     Route::middleware('auth:sanctum')->delete('/posts/{id}', 'deletePost');
     Route::middleware('check.role:admin')->delete('/admin/posts/{id}', 'deleteUserPost');
-
+    Route::middleware('auth:sanctum')->post('/posts/{id}/toggle-like', 'toggleLike');
+    Route::get('/posts/{id}/likes', 'getLikes');
+    Route::get('/post/sort', 'sortPosts');
 });
 
 
@@ -53,6 +55,7 @@ Route::controller(CommentController::class)->group(function () {
     Route::middleware('auth:sanctum')->post('/comments/{comment}/replies', 'storeReply');
     Route::get('/posts/{postId}/comments', 'getPostComments');
     Route::middleware('check.role:admin')->delete('/admin/comment/{id}', 'deleteComment');
+    Route::middleware('check.role:admin')->delete('/admin/reply/{id}', 'deleteReply');
 });
 
 
