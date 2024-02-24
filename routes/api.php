@@ -7,6 +7,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\FollowController;
 
 
 /*
@@ -61,6 +62,15 @@ Route::controller(CommentController::class)->group(function () {
 
 Route::controller(SearchController::class)->group(function () {
     Route::middleware('auth:sanctum')->get('/search', 'search');
+});
+
+
+Route::controller(FollowController::class)->group(function () {
+    Route::middleware('auth:sanctum')->post('/users/{userId}/follow', 'follow');
+    Route::middleware('auth:sanctum')->post('/users/{userId}/unfollow', 'unfollow');
+    Route::get('/users/{userId}/followers', 'followers');
+    Route::get('/users/me/following', 'following');
+    Route::get('/users/{userId}/isFollowing', 'isFollowing');
 });
 
 
