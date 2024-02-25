@@ -49,6 +49,10 @@ class UserController extends Controller
             return response()->json(['message' => 'Benutzer nicht gefunden'], 404);
         }
 
+        if ($user->profile_image) {
+            Storage::delete($user->profile_image);
+        }
+
         try {
             $user->delete();
             return response()->json(['message' => '✅ Konto erfolgreich gelöscht']);
@@ -79,14 +83,12 @@ class UserController extends Controller
 
 
     /**
-     * Löscht einen Benutzer anhand seiner ID.
      *
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
     public function deleteUser($id)
     {
-        // Stelle sicher, dass nur Admins diese Aktion durchführen können
         $user = Auth::user();
         if ($user->role !== 'admin') {
             return response()->json(['message' => 'Unautorisiert'], 403);
@@ -98,8 +100,6 @@ class UserController extends Controller
         }
 
         try {
-            // Führe notwendige Schritte durch, bevor der Benutzer gelöscht wird
-            // z.B. Löschen von zugehörigen Daten wie Posts, Kommentaren etc.
             $userToDelete->delete();
             return response()->json(['message' => 'Benutzer erfolgreich gelöscht']);
         } catch (\Exception $e) {
