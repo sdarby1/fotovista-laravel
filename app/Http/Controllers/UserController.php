@@ -50,7 +50,10 @@ class UserController extends Controller
         }
 
         if ($user->profile_image) {
-            Storage::delete($user->profile_image);
+            $path = public_path($user->profile_image);
+            if (file_exists($path)) {
+                unlink($path);
+            }
         }
 
         try {

@@ -154,6 +154,15 @@ class PostController extends Controller
         }
 
         try {
+
+            if ($post->image_path) {
+                $path = public_path($post->image_path);
+                if (file_exists($path)) {
+                    unlink($path);
+                }
+            }
+
+
             $post->delete();
             return response()->json(['message' => 'Post erfolgreich gelöscht']);
         } catch (\Exception $e) {
@@ -179,6 +188,15 @@ class PostController extends Controller
         }
 
         try {
+
+            if ($post->image_path) {
+                $path = public_path($post->image_path);
+                if (file_exists($path)) {
+                    unlink($path);
+                }
+            }
+
+            
             $post->delete();
             return response()->json(['message' => 'Post erfolgreich gelöscht']);
         } catch (\Exception $e) {

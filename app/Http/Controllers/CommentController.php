@@ -59,7 +59,6 @@ class CommentController extends Controller
             return response()->json(['message' => 'Kommentar nicht gefunden'], 404);
         }
 
-        // Überprüfe, ob der angemeldete User Admin ist
         if (Auth::user()->role !== 'admin') {
             return response()->json(['message' => 'Nicht autorisiert'], 403);
         }
@@ -80,7 +79,6 @@ class CommentController extends Controller
             return response()->json(['message' => 'Antwort nicht gefunden'], 404);
         }
 
-        // Überprüfe, ob der angemeldete User Admin ist
         if (Auth::user()->role !== 'admin') {
             return response()->json(['message' => 'Nicht autorisiert'], 403);
         }

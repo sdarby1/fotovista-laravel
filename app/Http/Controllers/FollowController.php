@@ -49,26 +49,24 @@ class FollowController extends Controller
         return response()->json(['followers' => $followers]);
     }
 
-    // Benutzern, denen ein Benutzer folgt, anzeigen
     public function following()
     {
-        $user = Auth::user(); // Holt den aktuell authentifizierten Benutzer
+        $user = Auth::user(); 
 
         if (!$user) {
             return response()->json(['message' => 'Nicht authentifiziert'], 401);
         }
 
-        $following = $user->following; // Benutzt die vorhandene Beziehung
+        $following = $user->following; 
 
         return response()->json(['following' => $following]);
     }
 
 
-    // In FollowController
 
     public function isFollowing($userId)
     {
-        $authUser = Auth::user(); // Der authentifizierte Benutzer
+        $authUser = Auth::user(); 
 
         if (!$authUser) {
             return response()->json(['message' => 'Nicht authentifiziert'], 401);
